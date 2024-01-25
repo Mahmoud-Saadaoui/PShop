@@ -1,8 +1,14 @@
 import React from 'react'
+import Header from './components/Header'
+import Footer from './components/Footer'
 
 function App() {
   return (
-    <div>Welcome</div>
+    <div>
+      <Header/>
+      <div>Welcome to mern shop</div>
+      <Footer/>
+    </div>
   )
 }
 
