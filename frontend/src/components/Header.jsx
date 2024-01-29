@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 function Header() {
   const [open, setOpen] = useState(false);
@@ -28,29 +29,31 @@ function Header() {
   const Links = () => {
     return (
       <div className="flex items-center md:flex-row flex-col my-2">
-        <div
+        <Link
+          to="/cart"
           className="text-emerald-50 md:hover:text-emerald-400 hover:font-bold hover:cursor-pointer duration-200
             text-xl md:text-md hover:text-emerald-100 my-3"
         >
           <i className="fa-solid fa-cart-shopping text-sm mr-0.5"></i>
           <span>Cart</span>
-        </div>
-        <div
+        </Link>
+        <Link
+          to="/login"
           className="mx-4 md:text-emerald-300 hover:font-bold hover:cursor-pointer duration-200
           text-emerald-100 text-xl md:text-md my-3"
         >
           <i className="fa-solid fa-user text-sm mr-0.5"></i>
           <span>Sign In</span>
-        </div>
+        </Link>
       </div>
     );
   };
   return (
     <>
       <div className="fixed top-0 left-0 w-full z-10 flex items-center justify-around bg-zinc-600 py-2 ">
-        <div className="font-allura text-lg font-bold text-zinc-50 w-[30%] mx-8">
+        <Link to="/" className="font-allura text-lg font-bold text-zinc-50 w-[30%] mx-8">
           MERN Shop
-        </div>
+        </Link>
         <div className="hidden md:flex justify-around items-center w-[70%]">
           <Search/>
           <Links/>
