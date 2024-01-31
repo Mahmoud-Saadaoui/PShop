@@ -13,7 +13,7 @@ function Product({product}) {
                 {product.name}
             </p>
         </Link>
-        <Rating value={product.rating} text={`${product.numReviews} reviews`}/>
+        <Rating value={product.rating} text={`${product.numReviews} reviews`} className="text-xs"/>
         <p className="text-md font-bold text-slate-500">$ {product.price}</p>
     </div>
   )
