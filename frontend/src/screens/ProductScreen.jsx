@@ -1,12 +1,20 @@
-import React, { useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
-import products from '../products'
-import Rating from '../components/Rating'
+import React, { useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import Rating from '../components/Rating';
+import axios from 'axios';
 
 function ProductScreen() {
+  const [product, setProduct] = useState([])
   const [qty, setQty] = useState(1)
-    const { id: productId } = useParams()
-    const product = products.find(p => p._id === productId)
+  const { id: productId } = useParams()
+
+  useEffect(() => {
+    const fetchSingleProduct = async () => {
+      const { data } = await axios.get(`/api/products/${productId}`)
+      setProduct(data)
+    }
+    fetchSingleProduct()
+  }, [productId])
   return (
     <div className="mt-16 md:mt-28">
       <Link
@@ -20,7 +28,7 @@ function ProductScreen() {
         <img 
           src={product.image} 
           alt={product.brand} 
-          className="w-full my-4 mx-auto sm:w-11/12 md:w-9/12 lg:w-3/12"
+          className="w-full my-4 mx-auto sm:w-11/12 md:w-9/12 lg:w-4/12"
         />
 
         <div className="lg:flex lg:flex-col lg:mx-4">
@@ -40,7 +48,7 @@ function ProductScreen() {
         </div>
 
         {/* ---- Table ----- */}
-        <div className="border border-gray-500 shadow-md rounded-lg mx-auto my-6 w-11/12 sm:w-9/12 lg:mx-4 lg:w-5/12">
+        <div className="border border-gray-500 shadow-md rounded-lg mx-auto my-6 w-11/12 sm:w-9/12 lg:mx-4 lg:w-6/12">
           <table className="w-full text-md leading-5">
             <tbody>
               <tr>
@@ -82,7 +90,7 @@ function ProductScreen() {
                 </td>
               </tr>
               <tr className="border border-t-gray-500">
-                <td className="py-3 px-4 w-full">
+                <td className="py-3 px-4 w-full ">
                   <button
                     type="submit"
                     className="lg:my-4 p-2 bg-slate-600 hover:bg-slate-700 text-slate-50 rounded-md m-2"

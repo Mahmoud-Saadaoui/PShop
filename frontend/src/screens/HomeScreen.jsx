@@ -1,8 +1,17 @@
-import React from 'react'
-import products from '../products'
+import React, {useEffect, useState} from 'react'
+import axios from 'axios'
 import Product from '../components/Product'
 
 function HomeScreen() {
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const { data } = await axios.get('/api/products')
+      setProducts(data)
+    }
+    fetchProducts()
+  }, []);
   return (
     <div className='mt-20 mx-6 md:mt-24'>
       <h1 className='font-bold text-xl font-sans text-slate-700'>
