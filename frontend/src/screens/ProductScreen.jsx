@@ -1,14 +1,24 @@
 import React, { useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import Rating from '../components/Rating';
 import { useGetProductDetailsQuery } from '../slices/productsApiSlice';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
+import { useDispatch } from 'react-redux';
+import { addToCart } from '../slices/cartSlice';
 
 function ProductScreen() {
   const [qty, setQty] = useState(1)
+
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
   const { id: productId } = useParams()
   const { data: product, isLoading, error, isError } = useGetProductDetailsQuery(productId);
+
+  const addToCartHandler = () => {
+    dispatch(addToCart({...product, qty}))
+    navigate('/cart')
+  }
   return (
     <>
       {isLoading ? (
@@ -99,6 +109,7 @@ function ProductScreen() {
                       <button
                         type="submit"
                         className="lg:my-4 p-2 bg-slate-600 hover:bg-slate-700 text-slate-50 rounded-md m-2"
+                        onClick={addToCartHandler}
                       >
                         Add To Cart
                       </button>
