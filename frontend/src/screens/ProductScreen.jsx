@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import Rating from '../components/Rating';
 import { useGetProductDetailsQuery } from '../slices/productsApiSlice';
+import Loader from '../components/Loader';
+import Message from '../components/Message';
 
 function ProductScreen() {
   const [qty, setQty] = useState(1)
@@ -9,19 +11,20 @@ function ProductScreen() {
   const { data: product, isLoading, error, isError } = useGetProductDetailsQuery(productId);
   return (
     <>
-      
       {isLoading ? (
-        <p>loading ...</p>
+        <Loader />
       ) : isError ? (
-        <p>{error?.data?.message || error?.error}</p>
+        <Message variant="red">
+          {error?.data?.message || error?.error}
+        </Message>
       ) : (
         <div className="mt-16 md:mt-28">
           <Link
-        to="/"
-        className="bg-gray-300 p-2 text-center mx-2 rounded-md hover:bg-gray-600 hover:text-gray-50 duration-200"
-      >
-        Go Back
-      </Link>
+            to="/"
+            className="bg-gray-300 p-2 text-center mx-2 rounded-md hover:bg-gray-600 hover:text-gray-50 duration-200"
+          >
+            Go Back
+          </Link>
           <div className="flex flex-col md:mt-6 lg:flex-row lg:ml-2">
             <img
               src={product.image}

@@ -1,3 +1,5 @@
+import Loader from '../components/Loader';
+import Message from '../components/Message';
 import Product from '../components/Product'
 import { useGetProductsQuery } from '../slices/productsApiSlice'
 
@@ -7,9 +9,11 @@ function HomeScreen() {
   return (
     <>
       {isLoading ? (
-        <p>loading ...</p>
+        <Loader/>
       ) : isError ? (
-        <p>{error?.data?.message || error?.error}</p>
+        <Message variant="red">
+          {error?.data?.message || error?.error}
+        </Message>
       ) : (
         <div className="mt-20 mx-6 md:mt-24">
           <h1 className="font-bold text-xl font-sans text-slate-700">
