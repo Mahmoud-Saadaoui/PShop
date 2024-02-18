@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useSelector } from 'react-redux'
 
 function Header() {
   const [open, setOpen] = useState(false);
   const mobileNav = () => {
     setOpen(!open);
   };
+
+  const { cartItems } = useSelector(state => state.cart)
+  console.log(cartItems)
 
   const Search = () => {
     return (
@@ -36,6 +40,13 @@ function Header() {
         >
           <i className="fa-solid fa-cart-shopping text-sm mr-0.5"></i>
           <span>Cart</span>
+          {
+            cartItems.length > 0 && (
+              <span className="px-2 py-1 ml-1 text-sm text-white font-bold bg-emerald-500 rounded-full">
+              { cartItems.reduce((a, c) => a + c?.qty, 0) }
+              </span>
+            )
+          }
         </Link>
         <Link
           to="/login"

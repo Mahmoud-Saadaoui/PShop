@@ -8,25 +8,28 @@ import { useDispatch } from 'react-redux';
 import { addToCart } from '../slices/cartSlice';
 
 function ProductScreen() {
-  const [qty, setQty] = useState(1)
+  const [qty, setQty] = useState(1);
 
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
-  const { id: productId } = useParams()
-  const { data: product, isLoading, error, isError } = useGetProductDetailsQuery(productId);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { id: productId } = useParams();
+  const {
+    data: product,
+    isLoading,
+    error,
+    isError,
+  } = useGetProductDetailsQuery(productId);
 
   const addToCartHandler = () => {
-    dispatch(addToCart({...product, qty}))
-    navigate('/cart')
-  }
+    dispatch(addToCart({ ...product, qty }));
+    navigate("/cart");
+  };
   return (
     <>
       {isLoading ? (
         <Loader />
       ) : isError ? (
-        <Message variant="red">
-          {error?.data?.message || error?.error}
-        </Message>
+        <Message variant="red">{error?.data?.message || error?.error}</Message>
       ) : (
         <div className="mt-16 md:mt-28">
           <Link
@@ -80,30 +83,34 @@ function ProductScreen() {
                       {product.countInStock > 0 ? "In Stock" : "Out Of Stock"}
                     </td>
                   </tr>
-                  <tr>
-                    <td className="py-3 px-4 text-left font-medium text-gray-600">
-                      Qty
-                    </td>
-                    <td className="py-3 px-4 text-left">
-                      <div>
-                        <select
-                          className="border-2 border-zinc-500 w-28 rounded-md focus:outline-0 p-[3px] pl-2 appearance-none bg-none"
-                          value={qty}
-                          onChange={(e) => setQty(Number(e.target.value))}
-                        >
-                          {[...Array(product.countInStock).keys()].map((x) => (
-                            <option
-                              key={x + 1}
-                              value={x + 1}
-                              className="overflow-auto"
-                            >
-                              {x + 1}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </td>
-                  </tr>
+                  {product.countInStock > 0 && (
+                    <tr>
+                      <td className="py-3 px-4 text-left font-medium text-gray-600">
+                        Qty
+                      </td>
+                      <td className="py-3 px-4 text-left">
+                        <div>
+                          <select
+                            className="border-2 border-zinc-500 w-28 rounded-md focus:outline-0 p-[3px] pl-2 appearance-none bg-none"
+                            value={qty}
+                            onChange={(e) => setQty(Number(e.target.value))}
+                          >
+                            {[...Array(product.countInStock).keys()].map(
+                              (x) => (
+                                <option
+                                  key={x + 1}
+                                  value={x + 1}
+                                  className="overflow-auto"
+                                >
+                                  {x + 1}
+                                </option>
+                              )
+                            )}
+                          </select>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
                   <tr className="border border-t-gray-500">
                     <td className="py-3 px-4 w-full ">
                       <button
