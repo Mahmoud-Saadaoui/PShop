@@ -15,7 +15,7 @@ function HomeScreen() {
           {error?.data?.message || error?.error}
         </Message>
       ) : (
-        <div className="mt-20 mx-6 md:mt-24">
+        <div className="mt-[50px] mx-6 md:mt-24">
           <h1 className="font-bold text-xl font-sans text-slate-700">
             Latest Products
           </h1>
