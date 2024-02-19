@@ -1,7 +1,8 @@
 import React from "react";
+import { Link } from  'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/Message";
-import { addToCart } from "../slices/cartSlice";
+import { addToCart, removeFromCart } from "../slices/cartSlice";
 
 function Cart() {
   const dispatch = useDispatch();
@@ -10,13 +11,17 @@ function Cart() {
   const addToCartHandler = (product, qty) => {
     dispatch(addToCart({ ...product, qty }));
   };
+
+  const removeFromCartHandler = (id) => {
+    dispatch(removeFromCart(id));
+  };
   return (
     <div className="mt-[50px] mx-6 md:mt-24">
       <h1 className="font-bold text-xl font-sans text-slate-700">
         Shopping Cart
       </h1>
       {cartItems?.length === 0 ? (
-        <Message variant="blue">hello</Message>
+        <Message variant="blue">Your cart is empty <Link to='/'>Go Back</Link></Message>
       ) : (
         <>
           {cartItems.map((item) => (
@@ -56,7 +61,10 @@ function Cart() {
                       </option>
                     ))}
                   </select>
-                  <i className="fa-solid fa-trash text-zinc-500 hover:text-slate-700 cursor-pointer md:my-4"></i>
+                  <i 
+                    className="fa-solid fa-trash text-zinc-500 hover:text-slate-700 cursor-pointer md:my-4"
+                    onClick={()=>removeFromCartHandler(item._id)}
+                  ></i>
                 </div>
               </div>
             </div>
