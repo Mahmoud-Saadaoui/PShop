@@ -1,4 +1,5 @@
 import { USERS_URL } from "../constants";
+import { apiSlice } from "./apiSlice"; 
 
 export const usersApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
@@ -12,4 +13,4 @@ export const usersApiSlice = apiSlice.injectEndpoints({
     })
 })
 
-export const { useLoginMutation } = productsApiSlice
+export const { useLoginMutation } = usersApiSlice

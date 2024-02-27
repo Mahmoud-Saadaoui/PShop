@@ -1,15 +1,22 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useSelector } from 'react-redux'
+import { useSelector } from "react-redux";
 
 function Header() {
   const [open, setOpen] = useState(false);
+  const [dropdown, setDropdown] = useState(false);
+  const { cartItems } = useSelector((state) => state.cart);
+  const { userInfo } = useSelector((state) => state.auth);
+
   const mobileNav = () => {
     setOpen(!open);
   };
 
-  const { cartItems } = useSelector(state => state.cart)
-  console.log(cartItems)
+  const logoutHandler = () => {
+    console.log("first");
+    setDropdown(false);
+    setOpen(false);
+  };
 
   const Search = () => {
     return (
@@ -40,37 +47,70 @@ function Header() {
         >
           <i className="fa-solid fa-cart-shopping text-sm mr-0.5"></i>
           <span>Cart</span>
-          {
-            cartItems.length > 0 && (
-              <span className="px-2 py-1 ml-1 text-sm text-white font-bold bg-emerald-500 rounded-full">
-              { cartItems.reduce((a, c) => a + c?.qty, 0) }
-              </span>
-            )
-          }
+          {cartItems.length > 0 && (
+            <span className="px-2 py-1 ml-1 text-sm text-white font-bold bg-emerald-500 rounded-full">
+              {cartItems.reduce((a, c) => a + c?.qty, 0)}
+            </span>
+          )}
         </Link>
-        <Link
-          to="/login"
-          className="mx-4 md:text-emerald-300 hover:font-bold hover:cursor-pointer duration-200
-          text-emerald-100 text-xl md:text-md my-3"
-        >
-          <i className="fa-solid fa-user text-sm mr-0.5"></i>
-          <span>Sign In</span>
-        </Link>
+        {userInfo ? (
+          <div
+            className="mx-4 md:text-emerald-300 group-hover:font-bold duration-200
+            text-emerald-100 text-xl md:text-md my-3 relative"
+          >
+            {userInfo.name}
+            <i
+              onClick={() => setDropdown(!dropdown)}
+              className="fa-solid fa-ellipsis-vertical ml-2 cursor-pointer"
+            ></i>
+            {dropdown && (
+              <ul className="absolute top-9 right-[-15px] bg-zinc-50 shadow-lg p-2 w-[80px] duration-200 rounded-sm">
+                <li
+                  className="text-zinc-600 text-[15px] hover:font-bold"
+                  onClick={() => {
+                    setOpen(false);
+                    setDropdown(false);
+                  }}
+                >
+                  <Link to={"/profile"}>Profile</Link>
+                </li>
+                <li
+                  onClick={logoutHandler}
+                  className="text-zinc-600 text-[15px] cursor-pointer hover:font-bold"
+                >
+                  Logout
+                </li>
+              </ul>
+            )}
+          </div>
+        ) : (
+          <Link
+            to="/login"
+            className="mx-4 md:text-emerald-300 hover:font-bold hover:cursor-pointer duration-200
+            text-emerald-100 text-xl md:text-md my-3"
+          >
+            <i className="fa-solid fa-user text-sm mr-0.5"></i>
+            <span>Sign In</span>
+          </Link>
+        )}
       </div>
     );
   };
   return (
     <>
       <div className="fixed top-0 left-0 w-full z-10 flex items-center justify-around bg-zinc-600 py-2 ">
-        <Link to="/" className="font-allura text-lg font-bold text-zinc-50 w-[30%] mx-8">
+        <Link
+          to="/"
+          className="font-allura text-lg font-bold text-zinc-50 w-[30%] mx-8"
+        >
           MERN Shop
         </Link>
-        <div className="hidden md:flex justify-around items-center w-[70%]">
-          <Search/>
-          <Links/>
+        <div className="hidden lg:flex justify-around items-center w-[70%]">
+          <Search />
+          <Links />
         </div>
         <div
-          className="md:hidden cursor-pointer mr-4 text-zinc-100"
+          className="lg:hidden cursor-pointer mr-4 text-zinc-100"
           onClick={mobileNav}
         >
           {!open ? (
@@ -81,12 +121,13 @@ function Header() {
         </div>
       </div>
 
-      <div className={`absolute left-0  bg-zinc-400 w-full h-full flex flex-col
+      <div
+        className={`absolute left-0  bg-zinc-400 w-full h-full flex flex-col
                     items-center justify-center transition-all duration-500 ease-in
-                    ${open ? "top-0" : "top-[-100%]"} md:top-[-100%]`}
+                    ${open ? "top-0" : "top-[-100%]"} lg:top-[-100%]`}
       >
-        <Search/>
-        <Links/>
+        <Search />
+        <Links />
       </div>
     </>
   );
