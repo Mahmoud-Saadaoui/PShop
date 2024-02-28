@@ -1,6 +1,8 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useLogoutMutation } from "../slices/usersApiSlice";
+import { logout } from "../slices/authSlice";
 
 function Header() {
   const [open, setOpen] = useState(false);
@@ -8,14 +10,25 @@ function Header() {
   const { cartItems } = useSelector((state) => state.cart);
   const { userInfo } = useSelector((state) => state.auth);
 
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+
+  const [logoutApiCall] = useLogoutMutation()
+
   const mobileNav = () => {
     setOpen(!open);
   };
 
-  const logoutHandler = () => {
-    console.log("first");
-    setDropdown(false);
-    setOpen(false);
+  const logoutHandler = async() => {
+    try {
+      await logoutApiCall()
+      dispatch(logout())
+      navigate('/login')
+      setDropdown(false);
+      setOpen(false);
+    } catch (err) {
+      console.log(err)
+    }
   };
 
   const Search = () => {
