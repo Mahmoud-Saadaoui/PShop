@@ -1,5 +1,5 @@
 import React from 'react'
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Header from './components/Header'
 import Footer from './components/Footer'
@@ -10,6 +10,7 @@ import ProductScreen from './screens/ProductScreen'
 import LoginScreen from './screens/LoginScreen'
 import RegisterScreen from './screens/RegisterScreen';
 import ShippingScreen from './screens/ShippingScreen';
+import PrivateRoute from './components/PrivateRoute';
 
 function App() {
   return (
@@ -21,7 +22,10 @@ function App() {
         <Route path='/cart' element={<CartScreen/>}/>
         <Route path='/login' element={<LoginScreen/>}/>
         <Route path='/register' element={<RegisterScreen/>}/>
-        <Route path='/shipping' element={<ShippingScreen/>}/>
+        
+        <Route path='' element={<PrivateRoute/>}>
+          <Route path='/shipping' element={<ShippingScreen/>}/>
+        </Route>
       </Routes>
       <Footer/>
       <ToastContainer />
