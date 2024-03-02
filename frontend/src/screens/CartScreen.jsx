@@ -69,20 +69,21 @@ function Cart() {
               </div>
             </div>
           ))}
-          <div className="border-2 border-zinc-400 rounded-lg my-2 pb-2 shadow sm:w-3/5">
+          <div className="border-2 border-zinc-400 rounded-lg my-2 pb-2 shadow sm:w-2/5">
             <h2 className="border-b-2 border-zinc-400 my-2 pl-2 pb-2 font-bold ">
               {`Subtotal (${cartItems.reduce(
                 (acc, item) => acc + item.qty,
                 0
-              )}) Items`}
+              )}) Items:`}
+              <span className="pl-4 text-slate-700">
+                ${" "}
+                {cartItems
+                  .reduce((acc, item) => acc + item.qty * item.price, 0)
+                  .toFixed(2)}
+              </span>
             </h2>
-            <span className="pl-2 ">
-              ${" "}
-              {cartItems
-                .reduce((acc, item) => acc + item.qty * item.price, 0)
-                .toFixed(2)}
-            </span>
-          </div>
+            <Link to={'/shipping'} className="mx-4 mt-4 text-zinc-50 bg-zinc-700 p-1 rounded-sm">Proceed To Checkout</Link>
+          </div> 
         </>
       )}
     </div>

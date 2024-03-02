@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { saveShippingAddress } from '../slices/cartSlice'
 import { useNavigate } from 'react-router-dom'
+import CheckoutSteps from '../components/CheckoutSteps'
 
 function ShippingScreen() {
   const cart = useSelector(state => state.cart)
@@ -21,7 +22,8 @@ function ShippingScreen() {
     navigate('/payment')
   }
   return (
-    <div className=" mt-[50px] mx-6 md:mt-24 h-[80vh]">
+    <div className=" mt-[50px] mx-6 md:mt-24 mb-2">
+      <CheckoutSteps step1 step2/>
       <h1 className="font-bold text-xl font-sans text-slate-700">Shipping</h1>
       <form className="w-full max-w-md mt-6" onSubmit={submitHandler}>
         <div className="mb-6 md:w-full">
