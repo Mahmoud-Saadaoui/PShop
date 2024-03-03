@@ -22,7 +22,7 @@ function ShippingScreen() {
     navigate('/payment')
   }
   return (
-    <div className=" mt-[50px] mx-6 md:mt-24 mb-2">
+    <div className=" mt-[50px] mx-6 lg:mt-24 mb-2">
       <CheckoutSteps step1 step2/>
       <h1 className="font-bold text-xl font-sans text-slate-700">Shipping</h1>
       <form className="w-full max-w-md mt-6" onSubmit={submitHandler}>
