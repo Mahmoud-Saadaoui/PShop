@@ -26,7 +26,7 @@ function PlaceOrderScreen() {
   const placeOrderHandler = async() => {
     try {
         const res = await createOrder({
-            orderItems: cart.orderItems,
+            orderItems: cart.cartItems,
             shippingAddress: cart.shippingAddress,
             paymentMethod: cart.paymentMethod,
             itemsPrice: cart.itemsPrice,
@@ -34,8 +34,9 @@ function PlaceOrderScreen() {
             taxPrice: cart.taxPrice,
             totalPrice: cart.totalPrice
         }).unwrap()
+        console.log(res)
         dispatch(clearCartItems())
-        navigate(`/order/${res?._id}`)
+        navigate(`/order/${res._id}`)
     } catch (error) {
         toast.error(error)
     }
@@ -108,7 +109,7 @@ function PlaceOrderScreen() {
           </p>
 
           <p className="m-1">
-            {isError && <Message variant={"red"}>{error}</Message>}
+            {isError && <Message variant={"red"}>{error.toString()}</Message>}
           </p>
 
           <button
