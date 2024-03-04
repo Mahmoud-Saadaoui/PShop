@@ -49,13 +49,13 @@ function PlaceOrderScreen() {
           <h1 className="text-slate-700 font-bold text-lg">Shipping</h1>
           <p className="text-sm py-2 border-b-2 border-zinc-400">
             <strong>Address: </strong>
-            {cart.shippingAddress.address}, {cart.shippingAddress.city}{" "}
+            {cart.shippingAddress.address}{" "}, {cart.shippingAddress.city}{" "}
             {cart.shippingAddress.postalCode}, {cart.shippingAddress.country}
           </p>
           <h1 className="text-slate-700 font-bold text-lg mt-4">
             Payment Method
           </h1>
-          <p className="text-sm py-2 border-b-2 border-zinc-400" s>
+          <p className="text-sm py-2 border-b-2 border-zinc-400">
             <strong>Method:</strong> {cart.paymentMethod}
           </p>
           <h1 className="text-slate-700 font-bold text-lg mt-4 pb-2">
