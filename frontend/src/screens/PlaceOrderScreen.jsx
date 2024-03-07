@@ -62,7 +62,7 @@ function PlaceOrderScreen() {
             Order Items
           </h1>
           {cart?.cartItems?.length === 0 ? (
-            <Message variant="red">Your cart is empty</Message>
+            <Message variant={"text-red-700 bg-red-200"}>Your cart is empty</Message>
           ) : (
             <>
               {cart?.cartItems.map((item) => (

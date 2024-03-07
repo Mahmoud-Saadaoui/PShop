@@ -11,7 +11,7 @@ function HomeScreen() {
       {isLoading ? (
         <Loader/>
       ) : isError ? (
-        <Message variant="red">
+        <Message variant={"text-red-700 bg-red-200"}>
           {error?.data?.message || error?.error}
         </Message>
       ) : (

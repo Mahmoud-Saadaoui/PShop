@@ -29,7 +29,7 @@ function ProductScreen() {
       {isLoading ? (
         <Loader />
       ) : isError ? (
-        <Message variant="red">{error?.data?.message || error?.error}</Message>
+        <Message variant={"text-red-700 bg-red-200"}>{error?.data?.message || error?.error}</Message>
       ) : (
         <div className="mt-16 md:mt-28">
           <Link

@@ -21,7 +21,7 @@ function Cart() {
         Shopping Cart
       </h1>
       {cartItems?.length === 0 ? (
-        <Message variant="blue">Your cart is empty <Link to='/'>Go Back</Link></Message>
+        <Message variant={"text-red-700 bg-red-200"}>Your cart is empty <Link to='/'>Go Back</Link></Message>
       ) : (
         <>
           {cartItems.map((item) => (
