@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useGetOrderDetailsQuery } from "../slices/ordersApiSlice";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
@@ -13,14 +13,15 @@ function OrderScreen() {
     isLoading,
     error,
   } = useGetOrderDetailsQuery(orderId);
-  console.log(order);
-
+  console.log(order?.orderItems);
   return (
     <div className="mt-[50px] mx-6 md:mt-24 mb-2">
       {isLoading ? (
         <Loader />
       ) : error ? (
-        <Message variant={"text-red-700 bg-red-200"}>{error?.message.toString()}</Message>
+        <Message variant={"text-red-700 bg-red-200"}>
+          {error?.message.toString()}
+        </Message>
       ) : (
         <div>
           <h1 className="text-slate-700 font-bold text-lg">
@@ -45,7 +46,9 @@ function OrderScreen() {
                   Delivered on {order.deliveredAt}
                 </Message>
               ) : (
-                <Message variant={"text-red-700 bg-red-200"}>Not Delivered</Message>
+                <Message variant={"text-red-700 bg-red-200"}>
+                  Not Delivered
+                </Message>
               )}
             </div>
           </div>
@@ -60,11 +63,59 @@ function OrderScreen() {
             </p>
             <div className="mx-2 my-4">
               {order.isPaid ? (
-                <Message variant={"text-green-700 bg-green-200"}>Paid on {order.paidAt}</Message>
+                <Message variant={"text-green-700 bg-green-200"}>
+                  Paid on {order.paidAt}
+                </Message>
               ) : (
                 <Message variant={"text-red-700 bg-red-200"}>Not Paid</Message>
               )}
             </div>
+          </div>
+
+          <div className="mt-4">
+            <h3 className="text-slate-700 font-bold text-md pr-2 pb-2">
+              Order Items
+            </h3>
+            {order?.orderItems.map((item) => (
+              <div
+                key={item?._id}
+                className="flex justify-between mb-4 border-b-[1px] border-zinc-300 pb-2"
+              >
+                <img
+                  src={item?.image}
+                  alt={item?.name}
+                  className="w-16 lg:w-20"
+                />
+                <div className="flex flex-col">
+                  <h3 className="text-sm text-slate-800 font-bold">
+                    <Link to={`/product/${item._id}`}>{item?.name}</Link>
+                  </h3>
+                  <p className="text-sm text-slate-800">
+                    {item.qty} x ${item.price} = $
+                    {(item.qty * (item.price * 100)) / 100}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="border-2 border-slate-600 rounded shadow-lg w-[250px] m-4 p-2">
+            <h1 className="border-b-2 border-slate-400 pb-2">Order Summary</h1>
+            <p className="m-1">
+              <strong className="mr-6">Items:</strong> ${order.itemsPrice}
+            </p>
+
+            <p className="m-1">
+              <strong>Shipping:</strong> ${order.shippingPrice}
+            </p>
+
+            <p className="m-1">
+              <strong className="mr-10">Tax:</strong> ${order.taxPrice}
+            </p>
+
+            <p className="m-1">
+              <strong className="mr-8">Total:</strong> ${order.totalPrice}
+            </p>
           </div>
         </div>
       )}
