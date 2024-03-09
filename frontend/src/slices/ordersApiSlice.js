@@ -17,15 +17,15 @@ export const ordersApiSlice = apiSlice.injectEndpoints({
             keepUnusedDataFor: 5
         }),
         payOrder: builder.mutation({
-            query: (orderId, details) => ({
-                url: `${PAYPAL_URL}/${orderId}/pay`,
+            query: ({ orderId, details }) => ({
+                url: `${ORDERS_URL}/${orderId}/paid`,
                 method: 'PUT',
                 body: {...details}
             }),
         }),
         getPayPalClientId: builder.query({
             query: () => ({
-                url: ORDERS_URL
+                url: PAYPAL_URL
             }),
             keepUnusedDataFor: 5
         }),

@@ -9,6 +9,7 @@ import Loader from "../components/Loader";
 import Message from "../components/Message";
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 import { useSelector } from "react-redux";
+import { toast } from 'react-toastify'
 
 function OrderScreen() {
   const { id: orderId } = useParams();
@@ -36,13 +37,13 @@ function OrderScreen() {
     if (!errorPayPal && !loadingPayPal && paypal.clientId) {
       const loadPaypalScript = async () => {
         paypalDispatch({
-          type: 'resetOptions',
+          type: "resetOptions",
           value: {
-            'client-id': paypal.clientId,
-            currency: 'USD',
+            "client-id": paypal.clientId,
+            currency: "USD",
           },
         });
-        paypalDispatch({ type: 'setLoadingStatus', value: 'pending' });
+        paypalDispatch({ type: "setLoadingStatus", value: "pending" });
       };
       if (order && !order.isPaid) {
         if (!window.paypal) {
@@ -51,6 +52,43 @@ function OrderScreen() {
       }
     }
   }, [errorPayPal, loadingPayPal, order, paypal, paypalDispatch]);
+
+  // async function onApproveTest() {
+  //   await payOrder({ orderId, details: { payer: {} } });
+  //   refetch();
+  //   toast.success('Order is paid'); 
+  // }
+
+  function onApprove(data, actions) {
+    return actions.order.capture().then(async function (details) {
+      try {
+        await payOrder({ orderId, details });
+        refetch();
+        toast.success('Order is paid');
+      } catch (err) {
+        toast.error(err?.data?.message || err.error);
+      }
+    });
+  }
+
+  function onError(err) {
+    toast.error(err.message);
+  }
+
+    function createOrder(data, actions) {
+    return actions.order
+      .create({
+        purchase_units: [
+          {
+            amount: { value: order.totalPrice },
+          },
+        ],
+      })
+      .then((orderID) => {
+        return orderID;
+      });
+  }
+
   return (
     <div className="mt-[50px] mx-6 md:mt-24 mb-2">
       {isLoading ? (
@@ -153,6 +191,31 @@ function OrderScreen() {
             <p className="m-1">
               <strong className="mr-8">Total:</strong> ${order.totalPrice}
             </p>
+
+            {!order.isPaid && (
+              <>
+                {loadingPay && <Loader />}
+                {isPending ? (
+                  <Loader />
+                ) : (
+                  <>
+                    {/* <button
+                      className="p-2 bg-slate-700 text-slate-100 rounded"
+                      onClick={onApproveTest}
+                    >
+                      Test Pay Order
+                    </button> */}
+                    <div className="mt-2">
+                      <PayPalButtons
+                        createOrder={createOrder}
+                        onApprove={onApprove}
+                        onError={onError}
+                      ></PayPalButtons>
+                    </div>
+                  </>
+                )}
+              </>
+            )}
           </div>
         </div>
       )}
