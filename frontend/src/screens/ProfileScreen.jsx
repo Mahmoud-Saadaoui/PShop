@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useProfileMutation } from "../slices/usersApiSlice";
 import Loader from "../components/Loader";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 import { setCredentials } from "../slices/authSlice";
+import { useGetMyOrdersQuery } from "../slices/ordersApiSlice";
+import { Link } from "react-router-dom";
 
 function ProfileScreen() {
   const [name, setName] = useState("");
@@ -16,6 +18,12 @@ function ProfileScreen() {
 
   const [updateProfile, { isLoading: loadingUpdateProfile }] =
     useProfileMutation();
+
+  const {
+    data: myOrders,
+    isLoading: myOrdersLoading,
+    error: myOrdersError,
+  } = useGetMyOrdersQuery();
 
   useEffect(() => {
     setName(userInfo.name);
@@ -43,10 +51,12 @@ function ProfileScreen() {
   };
 
   return (
-    <div className="mt-[50px] mx-6 md:mt-24 mb-2">
-      <h1 className="text-slate-700 font-bold text-lg">User Profile</h1>
-      <div className="column1">
-        <form className="w-full max-w-md mt-6" onSubmit={updateProfileHandler}>
+    <div className="mt-[50px] mx-6 lg:mt-24 mb-2">
+      <div className="">
+        <h2 className="text-slate-700 font-bold text-lg">
+          Update User Information
+        </h2>
+        <form className="w-full max-w-md mt-2" onSubmit={updateProfileHandler}>
           <div className="mb-6 md:w-full">
             <div className="md:w-1/3">
               <label
@@ -106,7 +116,7 @@ function ProfileScreen() {
             </div>
           </div>
           <div className="mb-6">
-            <div className="md:w-1/3">
+            <div className="md:w-2/3">
               <label
                 className="text-gray-500 font-bold pr-4"
                 htmlFor="inline-confirm-password"
@@ -132,11 +142,103 @@ function ProfileScreen() {
             >
               Update Profile
             </button>
-            {loadingUpdateProfile && <Loader/>}
+            {loadingUpdateProfile && <Loader />}
           </div>
         </form>
       </div>
-      <div className="column2"></div>
+      <div className="mt-6">
+        <h2 className="text-slate-700 font-bold text-lg">My Orders</h2>
+        {myOrdersLoading ? (
+          <Loader />
+        ) : myOrdersError ? (
+          <message variant={"text-red-700 bg-red-200"}>
+            {myOrdersError?.data?.message || myOrdersError.error}
+          </message>
+        ) : (
+          <div className="flex flex-col">
+            <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+              <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
+                        >
+                          ID
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
+                        >
+                          DATE
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
+                        >
+                          TOTAL
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
+                        >
+                          PAID
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
+                        >
+                          DELIVERED
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
+                        ></th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                      {myOrders.map((order) => (
+                        <tr key={order._id}>
+                          <td className="px-6 py-4 text-sm text-gray-800 whitespace-nowrap">
+                            {order._id}
+                          </td>
+                          <td className="px-6 py-4 text-sm text-gray-800 whitespace-nowrap">
+                            {order.createdAt.substring(0, 10)}
+                          </td>
+                          <td className="px-6 py-4 text-sm text-gray-800 whitespace-nowrap">
+                            {order.totalPrice}
+                          </td>
+                          <td className="px-6 py-4 text-sm text-gray-800 whitespace-nowrap">
+                            {order.isPaid ? (
+                              order.paidAt.substring(0, 10)
+                            ) : (
+                              <i className="fa-solid fa-xmark text-red-500"></i>
+                            )}
+                          </td>
+                          <td className="px-6 py-4 text-sm text-gray-800 whitespace-nowrap">
+                            {order.isDelivered ? (
+                              order.deliveredAt.substring(0, 10)
+                            ) : (
+                              <i className="fa-solid fa-xmark text-red-500"></i>
+                            )}
+                          </td>
+                          <td className="px-6 py-4 text-sm text-gray-800 whitespace-nowrap">
+                            <Link to={`/order/${order._id}`}>
+                              <button className="font-bold text-blue-900">Details</button>
+                            </Link>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
