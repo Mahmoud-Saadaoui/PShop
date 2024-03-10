@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import {
+  useDeliverOrderMutation,
   useGetOrderDetailsQuery,
   useGetPayPalClientIdQuery,
   usePayOrderMutation,
@@ -22,6 +23,7 @@ function OrderScreen() {
   } = useGetOrderDetailsQuery(orderId);
 
   const [payOrder, { isLoading: loadingPay }] = usePayOrderMutation();
+  const [deliverOrder, { isLoading: loadingDeliver }] = useDeliverOrderMutation();
 
   const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
 
@@ -53,11 +55,11 @@ function OrderScreen() {
     }
   }, [errorPayPal, loadingPayPal, order, paypal, paypalDispatch]);
 
-  // async function onApproveTest() {
-  //   await payOrder({ orderId, details: { payer: {} } });
-  //   refetch();
-  //   toast.success('Order is paid'); 
-  // }
+  async function onApproveTest() {
+    await payOrder({ orderId, details: { payer: {} } });
+    refetch();
+    toast.success('Order is paid'); 
+  }
 
   function onApprove(data, actions) {
     return actions.order.capture().then(async function (details) {
@@ -87,6 +89,16 @@ function OrderScreen() {
       .then((orderID) => {
         return orderID;
       });
+  }
+
+  const deliverOrderHandler = async() => {
+      try {
+        await deliverOrder(orderId)
+        refetch()
+        toast.success('Order Delivered')
+      } catch (err) {
+        toast.error(err?.data?.message || err.error);
+      }
   }
 
   return (
@@ -199,12 +211,12 @@ function OrderScreen() {
                   <Loader />
                 ) : (
                   <>
-                    {/* <button
+                    <button
                       className="p-2 bg-slate-700 text-slate-100 rounded"
                       onClick={onApproveTest}
                     >
                       Test Pay Order
-                    </button> */}
+                    </button>
                     <div className="mt-2">
                       <PayPalButtons
                         createOrder={createOrder}
@@ -216,6 +228,20 @@ function OrderScreen() {
                 )}
               </>
             )}
+
+            {loadingDeliver && <Loader />}
+            {userInfo &&
+              userInfo.isAdmin &&
+              order.isPaid &&
+              !order.isDelivered && (
+                  <button
+                    type='button'
+                    className='p-2 bg-slate-700 text-slate-100 rounded'
+                    onClick={deliverOrderHandler}
+                  >
+                    Mark As Delivered
+                  </button>
+              )}
           </div>
         </div>
       )}
