@@ -7,6 +7,8 @@ import { logout } from "../slices/authSlice";
 function Header() {
   const [open, setOpen] = useState(false);
   const [dropdown, setDropdown] = useState(false);
+  const [dropdownAdmin, setDropdownAdmin] = useState(false);
+
   const { cartItems } = useSelector((state) => state.cart);
   const { userInfo } = useSelector((state) => state.auth);
 
@@ -29,6 +31,50 @@ function Header() {
     } catch (err) {
       console.log(err)
     }
+  };
+
+  const Admin = () => {
+    return (<div
+      className="md:text-emerald-300 group-hover:font-bold duration-200
+            text-emerald-100 text-xl md:text-md my-3 relative"
+    >
+      admin
+      <i
+        onClick={() => setDropdownAdmin(!dropdownAdmin)}
+        className="fa-solid fa-ellipsis-vertical ml-2 cursor-pointer"
+      ></i>
+      {dropdownAdmin && (
+        <ul className="absolute top-9 right-[-15px] bg-zinc-50 shadow-lg p-2 w-[80px] duration-200 rounded-sm">
+          <li
+            className="text-zinc-600 text-[15px] hover:font-bold"
+            onClick={() => {
+              setOpen(false);
+              setDropdownAdmin(false);
+            }}
+          >
+            <Link to={"/admin/productlist"}>Products</Link>
+          </li>
+          <li
+            className="text-zinc-600 text-[15px] hover:font-bold"
+            onClick={() => {
+              setOpen(false);
+              setDropdownAdmin(false);
+            }}
+          >
+            <Link to={"/admin/userlist"}>Users</Link>
+          </li>
+          <li
+            className="text-zinc-600 text-[15px] hover:font-bold"
+            onClick={() => {
+              setOpen(false);
+              setDropdownAdmin(false);
+            }}
+          >
+            <Link to={"/admin/orderlist"}>Orders</Link>
+          </li>
+        </ul>
+      )}
+    </div>);
   };
 
   const Search = () => {
@@ -109,6 +155,7 @@ function Header() {
       </div>
     );
   };
+
   return (
     <>
       <div className="fixed top-0 left-0 w-full z-10 flex items-center justify-around bg-zinc-600 py-2 ">
@@ -121,6 +168,8 @@ function Header() {
         <div className="hidden lg:flex justify-around items-center w-[70%]">
           <Search />
           <Links />
+          {userInfo && userInfo.isAdmin && <Admin/>}
+          
         </div>
         <div
           className="lg:hidden cursor-pointer mr-4 text-zinc-100"
@@ -141,6 +190,7 @@ function Header() {
       >
         <Search />
         <Links />
+        {userInfo && userInfo.isAdmin && <Admin/>}
       </div>
     </>
   );
