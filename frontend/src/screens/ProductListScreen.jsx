@@ -1,15 +1,35 @@
 import React from "react";
-import { useGetProductsQuery } from "../slices/productsApiSlice";
+import { useCreateProductMutation, useGetProductsQuery } from "../slices/productsApiSlice";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import { Link } from "react-router-dom";
+import { toast } from 'react-toastify'
 
 function ProductListScreen() {
   const {
     data: products,
     isLoading: productsLoading,
     error: productsError,
+    refetch
   } = useGetProductsQuery();
+
+  const [createProduct, { isLoading: loadingCreate }] = useCreateProductMutation()
+
+  const deleteHandler = async(id) => {
+    console.log(id)
+  }
+
+  const createProductHandler = async() => {
+    if (window.confirm('Are you sure you want to create a new product?')) {
+      try {
+        await createProduct();
+        refetch();
+      } catch (err) {
+        toast.error(err?.data?.message || err.error);
+      }
+    }
+  }
+
   return (
     <div className="mt-[50px] mx-6 lg:mt-24 mb-2">
       <div className="flex justify-around items-center">
@@ -17,10 +37,12 @@ function ProductListScreen() {
         <button
           type="button"
           className="p-2 bg-slate-700 text-slate-100 rounded"
+          onClick={createProductHandler}
         >
           Create New Product
         </button>
       </div>
+      {loadingCreate && <Loader/>}
       {productsLoading ? (
         <Loader />
       ) : productsError ? (
@@ -51,7 +73,7 @@ function ProductListScreen() {
                         <td>${product.price}</td>
                         <td>{product.category}</td>
                         <td>{product.brand}</td>
-                        <td>
+                        <td className="flex items-center justify-between">
                           <Link to={`/admin/product/${product._id}/edit`}>
                             <button className="">
                               <i className="fa-solid fa-pen-to-square text-blue-800"></i>
@@ -59,7 +81,7 @@ function ProductListScreen() {
                           </Link>
                           <button
                             className="ml-4"
-                            // onClick={() => deleteHandler(product._id)}
+                            onClick={() => deleteHandler(product._id)}
                           >
                             <i className="fa-solid fa-trash text-red-700"></i>
                           </button>
