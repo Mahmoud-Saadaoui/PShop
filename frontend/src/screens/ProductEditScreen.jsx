@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   useGetProductDetailsQuery,
   useUpdateProductMutation,
+  useUploadProductImageMutation,
 } from "../slices/productsApiSlice";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
@@ -29,6 +30,8 @@ function ProductEditScreen() {
 
   const [updateProduct, { isLoading: loadingUpdate }] =
     useUpdateProductMutation();
+    const [uploadProductImage, { isLoading: loadingUpload }] =
+    useUploadProductImageMutation();
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -62,6 +65,19 @@ function ProductEditScreen() {
       setDescription(product.description);
     }
   }, [product]);
+
+  const uploadFileHandler = async (e) => {
+    const formData = new FormData();
+    formData.append('image', e.target.files[0]);
+    try {
+      const res = await uploadProductImage(formData).unwrap();
+      toast.success(res.message);
+      setImage(res.image);
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
+    }
+  };
+
   return (
     <div className="mt-[50px] mx-6 lg:mt-24 mb-2">
       <div className="mt-4 w-[100px] bg-gray-300 p-2 text-center rounded-md hover:bg-gray-600 hover:text-gray-50 duration-200">
@@ -113,6 +129,36 @@ function ProductEditScreen() {
                   placeholder="Enter a price"
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="mb-6 md:w-full">
+              <div className="md:w-2/3">
+                <label
+                  className=" text-gray-500 font-bold pr-4"
+                  htmlFor="inline-img"
+                >
+                  Image
+                </label>
+              </div>
+              <div className="md:w-full">
+                <input
+                  className="w-full bg-gray-200 appearance-none border-2 border-gray-200 rounded py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-slate-500"
+                  id="inline-img"
+                  type="text"
+                  placeholder="Enter Image Url"
+                  aria-label="img"
+                  value={image}
+                  onChange={(e) => setImage}
+                />
+              </div>
+              <div className="md:w-full">
+                <input
+                  className="w-full bg-gray-200 appearance-none border-2 border-gray-200 rounded py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-slate-500"
+                  // id="inline-img"
+                  type="file"
+                  placeholder="Choose Image"
+                  onChange={uploadFileHandler}
                 />
               </div>
             </div>
