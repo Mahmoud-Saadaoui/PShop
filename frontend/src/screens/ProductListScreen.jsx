@@ -1,26 +1,41 @@
 import React from "react";
-import { useCreateProductMutation, useGetProductsQuery } from "../slices/productsApiSlice";
+import {
+  useCreateProductMutation,
+  useDeleteProductMutation,
+  useGetProductsQuery,
+} from "../slices/productsApiSlice";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import { Link } from "react-router-dom";
-import { toast } from 'react-toastify'
+import { toast } from "react-toastify";
 
 function ProductListScreen() {
   const {
     data: products,
     isLoading: productsLoading,
     error: productsError,
-    refetch
+    refetch,
   } = useGetProductsQuery();
 
-  const [createProduct, { isLoading: loadingCreate }] = useCreateProductMutation()
+  const [createProduct, { isLoading: loadingCreate }] =
+    useCreateProductMutation();
 
-  const deleteHandler = async(id) => {
-    console.log(id)
-  }
+  const [deleteProduct, { isLoading: loadingDelete }] =
+    useDeleteProductMutation();
 
-  const createProductHandler = async() => {
-    if (window.confirm('Are you sure you want to create a new product?')) {
+  const deleteHandler = async (id) => {
+    if (window.confirm("Are you sure")) {
+      try {
+        await deleteProduct(id);
+        refetch();
+      } catch (err) {
+        toast.error(err?.data?.message || err.error);
+      }
+    }
+  };
+
+  const createProductHandler = async () => {
+    if (window.confirm("Are you sure you want to create a new product?")) {
       try {
         await createProduct();
         refetch();
@@ -28,7 +43,7 @@ function ProductListScreen() {
         toast.error(err?.data?.message || err.error);
       }
     }
-  }
+  };
 
   return (
     <div className="mt-[50px] mx-6 lg:mt-24 mb-2">
@@ -42,7 +57,8 @@ function ProductListScreen() {
           Create New Product
         </button>
       </div>
-      {loadingCreate && <Loader/>}
+      {loadingCreate && <Loader />}
+      {loadingDelete && <Loader />}
       {productsLoading ? (
         <Loader />
       ) : productsError ? (
