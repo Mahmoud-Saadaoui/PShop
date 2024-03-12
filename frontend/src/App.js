@@ -18,6 +18,7 @@ import ProfileScreen from './screens/ProfileScreen';
 import AdminRoute from './components/AdminRoute';
 import OrderListScreen from './screens/OrderListScreen';
 import ProductListScreen from './screens/ProductListScreen';
+import ProductEditScreen from './screens/ProductEditScreen';
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
         <Route path='' element={<AdminRoute/>}>
           <Route path='/admin/orderlist' element={<OrderListScreen/>}/>
           <Route path='/admin/productlist' element={<ProductListScreen/>}/>
+          <Route path='/admin/product/:id/edit' element={<ProductEditScreen/>}/>
         </Route>
       </Routes>
       <Footer/>
