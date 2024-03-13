@@ -1,21 +1,24 @@
 import React from "react";
-import { useDeleteUserMutation, useGetUsersQuery } from "../slices/usersApiSlice";
+import {
+  useDeleteUserMutation,
+  useGetUsersQuery,
+} from "../slices/usersApiSlice";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import { Link } from "react-router-dom";
-import { toast } from 'react-toastify'
+import { toast } from "react-toastify";
 
 function UserListScreen() {
   const { data: users, refetch, isLoading, error } = useGetUsersQuery();
- 
-  const [deleteUser, {isLoading: loadingDelete}] = useDeleteUserMutation();
+
+  const [deleteUser, { isLoading: loadingDelete }] = useDeleteUserMutation();
 
   const deleteHandler = async (id) => {
-    if (window.confirm('Are you sure')) {
+    if (window.confirm("Are you sure")) {
       try {
         await deleteUser(id);
         refetch();
-        toast.success('user deleted')
+        toast.success("user deleted");
       } catch (err) {
         toast.error(err?.data?.message || err.error);
       }
@@ -24,7 +27,7 @@ function UserListScreen() {
   return (
     <div className="mt-[50px] mx-6 lg:mt-24 mb-2">
       <h1 className="text-slate-700 font-bold text-lg">Users</h1>
-      {loadingDelete && <Loader/>}
+      {loadingDelete && <Loader />}
       {isLoading ? (
         <Loader />
       ) : error ? (
@@ -87,21 +90,17 @@ function UserListScreen() {
                           )}
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-800 whitespace-nowrap">
-                          {!user.isAdmin && (
-                            <>
-                              <Link to={`/admin/user/${user._id}/edit`}>
-                                <button className="font-bold text-blue-900">
-                                  <i className="fa-solid fa-pen-to-square text-blue-800"></i>
-                                </button>
-                              </Link>
-                              <button
-                                className="ml-4"
-                                onClick={() => deleteHandler(user._id)}
-                              >
-                                <i className="fa-solid fa-trash text-red-700"></i>
-                              </button>
-                            </>
-                          )}
+                          <Link to={`/admin/user/${user._id}/edit`}>
+                            <button className="font-bold text-blue-900">
+                              <i className="fa-solid fa-pen-to-square text-blue-800"></i>
+                            </button>
+                          </Link>
+                          <button
+                            className="ml-4"
+                            onClick={() => deleteHandler(user._id)}
+                          >
+                            <i className="fa-solid fa-trash text-red-700"></i>
+                          </button>
                         </td>
                       </tr>
                     ))}
