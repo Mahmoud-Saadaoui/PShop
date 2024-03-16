@@ -1,35 +1,66 @@
-import React, { useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import Rating from '../components/Rating';
-import { useGetProductDetailsQuery } from '../slices/productsApiSlice';
-import Loader from '../components/Loader';
-import Message from '../components/Message';
-import { useDispatch } from 'react-redux';
-import { addToCart } from '../slices/cartSlice';
+import React, { useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import Rating from "../components/Rating";
+import {
+  useCreateReviewMutation,
+  useGetProductDetailsQuery,
+} from "../slices/productsApiSlice";
+import Loader from "../components/Loader";
+import Message from "../components/Message";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "../slices/cartSlice";
+import { toast } from "react-toastify";
 
 function ProductScreen() {
-  const [qty, setQty] = useState(1);
-
   const dispatch = useDispatch();
+  const { userInfo } = useSelector((state) => state.auth);
+
+  const [qty, setQty] = useState(1);
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
+
   const navigate = useNavigate();
   const { id: productId } = useParams();
   const {
     data: product,
     isLoading,
+    refetch,
     error,
     isError,
   } = useGetProductDetailsQuery(productId);
+  const [createReview, { isLoading: isReviewLoading }] =
+    useCreateReviewMutation();
 
   const addToCartHandler = () => {
     dispatch(addToCart({ ...product, qty }));
     navigate("/cart");
+  };
+
+  const submitHandler = async (e) => {
+    e.preventDefault();
+
+    try {
+      await createReview({
+        productId,
+        rating,
+        comment,
+      }).unwrap();
+      refetch();
+      toast.success("Review created successfully");
+      setComment('')
+      setRating(0)
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
+    }
   };
   return (
     <>
       {isLoading ? (
         <Loader />
       ) : isError ? (
-        <Message variant={"text-red-700 bg-red-200"}>{error?.data?.message || error?.error}</Message>
+        <Message variant={"text-red-700 bg-red-200"}>
+          {error?.data?.message || error?.error}
+        </Message>
       ) : (
         <div className="mt-16 md:mt-28">
           <Link
@@ -126,10 +157,104 @@ function ProductScreen() {
               </table>
             </div>
           </div>
+
+          {/* add a review */}
+          <div className="ml-4">
+            <h2 className="text-slate-700 font-bold text-md pr-2">Reviews</h2>
+            {product.reviews.length === 0 && (
+              <Message variant={"text-blue-700 bg-blue-200"}>
+                No Reviews
+              </Message>
+            )}
+            <div className="my-4">
+              {product.reviews.map((review) => (
+                <div key={review._id} className="bg-slate-100 p-2 my-4 md:w-9/12 mx-2">
+                  <strong>{review.name}</strong>
+                  <Rating value={review.rating} />
+                  <p>{review.createdAt.substring(0, 10)}</p>
+                  <p>{review.comment}</p>
+                </div>
+              ))}
+            </div>
+            <h2 className="text-slate-700 font-bold text-md pr-2 mt-6">
+              Write a Customer Review
+            </h2>
+            {isReviewLoading && <Loader />}
+            {userInfo ? (
+              <form onSubmit={submitHandler} className="my-4">
+                <label
+                  htmlFor="rating-label"
+                  className="text-gray-500 font-bold pr-4"
+                >
+                  Rating:
+                </label>
+                <select
+                  id="rating-label"
+                  className="border-2 border-zinc-500 w-28 rounded-md focus:outline-0 p-[3px] pl-2 appearance-none bg-none"
+                  value={rating}
+                  onChange={(e) => setRating(Number(e.target.value))}
+                >
+                  <option value="" className="overflow-auto text-sm">
+                    Select ...
+                  </option>
+                  <option value="1" className="overflow-auto text-sm">
+                    1- Poor
+                  </option>
+                  <option value="2" className="overflow-auto text-sm">
+                    2- Fair
+                  </option>
+                  <option value="3" className="overflow-auto text-sm">
+                    3- Good
+                  </option>
+                  <option value="4" className="overflow-auto text-sm">
+                    4- Very Good
+                  </option>
+                  <option value="5" className="overflow-auto text-sm">
+                    5- Excellent
+                  </option>
+                </select>
+
+                <div className="my-6 md:w-2/3">
+                  <div className="md:w-1/3">
+                    <label
+                      className=" text-gray-500 font-bold pr-4"
+                      htmlFor="comment-label"
+                    >
+                      Comment
+                    </label>
+                  </div>
+                  <div className="md:w-full">
+                    <textarea
+                      className="w-full bg-gray-200 appearance-none border-2 border-gray-200 rounded py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-slate-500"
+                      id="comment-label"
+                      type="text"
+                      value={comment}
+                      onChange={(e) => setComment(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <button
+                  className="shadow bg-slate-700 hover:bg-slate-500 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
+                  type="submit"
+                  disabled={isReviewLoading}
+                >
+                  Submit
+                </button>
+              </form>
+            ) : (
+              <Message variant={"text-blue-700 bg-blue-200"}>
+                Please{" "}
+                <Link to="/login" className="font-bold text-bue-900">
+                  Sign in
+                </Link>{" "}
+                to write a review.
+              </Message>
+            )}
+          </div>
         </div>
       )}
     </>
   );
 }
 
-export default ProductScreen
+export default ProductScreen;
