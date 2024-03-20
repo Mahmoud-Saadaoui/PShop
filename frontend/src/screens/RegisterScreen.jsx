@@ -107,7 +107,7 @@ function RegisterScreen() {
               type="submit"
               disabled={isLoading}
             >
-              Sign In
+              Register
             </button>
             <p className="mt-2">
               Already have account?
@@ -115,7 +115,7 @@ function RegisterScreen() {
                 to={redirect ? `/login?redirect=${redirect}` : "/login"}
                 className="font-bold text-zinc-700 ml-2"
               >
-                Register
+                Sign In
               </Link>
             </p>
           </div>
