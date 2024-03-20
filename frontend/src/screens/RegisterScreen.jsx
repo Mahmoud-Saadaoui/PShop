@@ -107,7 +107,7 @@ function RegisterScreen() {
               type="submit"
               disabled={isLoading}
             >
-              Register
+              Sign In
             </button>
             <p className="mt-2">
               Already have account?
