@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import bcrypt from 'bcryptjs'
+import bcrypt from 'bcryptjs';
 
 const userSchema = mongoose.Schema(
   {
@@ -38,7 +38,8 @@ userSchema.pre('save', async function (next) {
   }
 
   const salt = await bcrypt.genSalt(10);
-  this.password = bcrypt.hash(this.password, salt);
+  const hashedPassword = await bcrypt.hash(this.password, salt);
+  this.password = hashedPassword;
 });
 
 const User = mongoose.model('User', userSchema);
