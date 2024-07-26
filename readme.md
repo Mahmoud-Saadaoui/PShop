@@ -36,8 +36,6 @@ Build an eCommerce platform from the ground up with React, Redux Toolkit, Expres
 - Environment variables
 
 ## Overview
-![img](./images/Annotate-Image.png)
-***
 ![img](./images/cart.png)
 ***
 ![img](./images/dashboard%20orders.png)
