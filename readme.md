@@ -52,17 +52,16 @@ Build an eCommerce platform from the ground up with React, Redux Toolkit, Expres
 ***
 ![img](./images/login.png)
 ***
-[img](./images/my%20orders.png)
+![img](./images/my%20orders.png)
 ***
 ![img](./images/payment.png)
 ***
-[img](./images/place%20order.png)
+![img](./images/place%20order.png)
 ***
 ![img](./images/profile.png)
 ***
 ![img](./images/shipping.png)
 ***
-
 ![img](./images/single%20product.png)
 
 
