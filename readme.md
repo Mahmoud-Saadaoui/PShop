@@ -7,8 +7,6 @@
 Build an eCommerce platform from the ground up with React, Redux Toolkit, Express & MongoDB
 - Full-featured shopping cart with quantity
 - Product reviews and ratings
-- Top products carousel
-- Product search feature
 - User profile with orders
 - Admin product management
 - Admin user management
@@ -22,7 +20,7 @@ Build an eCommerce platform from the ground up with React, Redux Toolkit, Expres
 
 - React with functional components & hooks
 - React router
-- React-Bootstrap UI library
+- Tailwind CSS UI library
 - How to structure components
 - Component level state & props
 - Managing global state with Redux (Actions & Reducers)
