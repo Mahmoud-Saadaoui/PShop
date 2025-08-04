@@ -16,9 +16,16 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    avatar: {
+      type: String,
+    },
     isAdmin: {
       type: Boolean,
       required: true,
+      default: false,
+    },
+    isAccountVerified: {
+      type:Boolean,
       default: false,
     },
   },

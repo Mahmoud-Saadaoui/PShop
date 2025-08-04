@@ -9,12 +9,14 @@ import {
   registerUser,
   updateUser,
   updateUserProfile,
+  verifyAccount,
 } from "../controllers/userController.js";
 import { admin, protect } from "../middlewares/authMiddleware.js";
 const router = express.Router();
 
 // /api/users
-router.route("/").post(registerUser).get(protect, admin, getUsers);
+router.route("/").get(protect, admin, getUsers);
+router.post('/register', registerUser)
 router.post("/logout", logoutUser);
 router.post("/login", authUser);
 router
@@ -26,5 +28,7 @@ router
   .get(protect, admin, getUserById)
   .put(protect, admin, updateUser)
   .delete(protect, admin, deleteUser);
+
+router.route("/:userId/verify/:token").get(verifyAccount)
 
 export default router;
