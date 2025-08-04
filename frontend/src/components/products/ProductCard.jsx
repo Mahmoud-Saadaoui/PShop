@@ -1,6 +1,7 @@
 import React from "react";
-import { FaCartPlus } from "react-icons/fa";
+import { FaCartPlus, FaArrowRight  } from "react-icons/fa";
 import Rating from "./Rating";
+import { Link } from "react-router-dom"
 
 const ProductCard = ({ product }) => {
   return (
@@ -20,13 +21,25 @@ const ProductCard = ({ product }) => {
           </button>
         </div>
       </div>
-      <div className="px-1 pt-2">
-        <div className="flex justify-between">
-          <h4 className="font-medium">{product.name}</h4>
-          <span className="text-[#53CCD7] font-bold">${product.price}</span>
+      <Link
+        to={`/products/${product._id}`}
+        className="block transform transition duration-200 hover:scale-[1.02] mt-2"
+      >
+        <div className="px-1 pt-2">
+          <div className="flex justify-between items-center">
+            <h4 className="font-medium">{product.name}</h4>
+            <span className="text-[#53CCD7] font-bold">${product.price}</span>
+          </div>
+          <div className="flex items-center justify-between mt-1">
+            <Rating
+              text={product.numReviews}
+              value={product.rating}
+              className="text-md"
+            />
+            <FaArrowRight className="text-[#53CCD7]" />
+          </div>
         </div>
-        <Rating text={product.numReviews} value={product.rating} className="text-md" />
-      </div>
+      </Link>
     </div>
   );
 };
