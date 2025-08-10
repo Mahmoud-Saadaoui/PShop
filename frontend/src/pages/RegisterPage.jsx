@@ -1,80 +1,108 @@
-import logo from "../assets/EShopty.png"
+import { Link } from "react-router-dom";
+import AuthWithGoogle from "../components/form/AuthWithGoogle";
+import FormRedirectLink from "../components/form/FormRedirectLink";
+import Logo from "../components/Logo";
+import { useRegister } from "../lib/queries/auth.queries";
+import Alert from "../components/Alert";
+import Spinner from "../components/loaders/Spinner";
+import { useState } from "react";
 
 const RegisterPage = () => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const nameRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[.-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$/;
+
+  const { mutate, isPending, error, isError } = useRegister();
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    setErrorMessage("");
+
+    if (email === "" || password === "" || name === "") {
+      return setErrorMessage("All fields are required");
+    }
+    if (!nameRegex.test(name)) {
+      return setErrorMessage("Please enter a valid name");
+    }
+    if (!emailRegex.test(email)) {
+      return setErrorMessage("Please enter a valid email");
+    }
+    if (password.length < 6) {
+      return setErrorMessage("Password can't be less than 6 characters");
+    }
+    mutate(
+      { email, password, name },
+      {
+        // onSuccess: (data) => {
+        //   queryClient.setQueryData(['user'], data)
+        //   navigate('/')
+        // },
+      }
+    );
+    setName("");
+    setEmail("");
+    setPassword("");
+  };
   return (
     <div className="px-4 sm:px-10 md:px-20 lg:px-40 flex justify-center py-10 min-h-screen bg-white text-[#141414]">
-      <div className="layout-content-container flex flex-col w-full max-w-[512px] py-5 flex-1">
-        <img alt="" src={logo}/>
-
-        {/* Username */}
-        <form>
-        <div className="flex flex-wrap items-end gap-4 px-4 py-3">
-          <label className="flex flex-col min-w-40 flex-1">
-            <p className="text-base font-medium pb-2">Username</p>
+      {/* Display Errors If Exist */}
+      {isError ? (
+        <Alert
+          type="error"
+          message={error.response?.data.message || "Failed Register"}
+        />
+      ) : (
+        errorMessage && <Alert type="error" message={errorMessage} /> 
+      )}
+      <div className="flex flex-col w-full max-w-md py-5">
+        <Logo size="xl" />
+        <form className="space-y-4 px-4" onSubmit={handleFormSubmit}>
+          <label className="flex flex-col">
+            <span className="text-sm font-medium mb-1">Username</span>
             <input
               type="text"
               placeholder="Enter your username"
-              className="form-input w-full resize-none rounded-xl text-[#141414] focus:outline-0 focus:ring-0 border border-[#dbdbdb] bg-neutral-50 focus:border-[#dbdbdb] h-14 placeholder:text-neutral-500 p-[15px] text-base font-normal"
+              className="w-full h-12 rounded-lg border border-gray-300 bg-neutral-50 px-4 text-sm placeholder:text-gray-400 focus:border-[#FF3956] focus:outline-none"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
             />
           </label>
-        </div>
-
-        {/* Email */}
-        <div className="flex flex-wrap items-end gap-4 px-4 py-3">
-          <label className="flex flex-col min-w-40 flex-1">
-            <p className="text-base font-medium pb-2">Email</p>
+          <label className="flex flex-col">
+            <span className="text-sm font-medium mb-1">Email</span>
             <input
               type="email"
               placeholder="Enter your email"
-              className="form-input w-full resize-none rounded-xl text-[#141414] focus:outline-0 focus:ring-0 border border-[#dbdbdb] bg-neutral-50 focus:border-[#dbdbdb] h-14 placeholder:text-neutral-500 p-[15px] text-base font-normal"
+              className="w-full h-12 rounded-lg border border-gray-300 bg-neutral-50 px-4 text-sm placeholder:text-gray-400 focus:border-[#FF3956] focus:outline-none"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </label>
-        </div>
-
-        {/* Password */}
-        <div className="flex flex-wrap items-end gap-4 px-4 py-3">
-          <label className="flex flex-col min-w-40 flex-1">
-            <p className="text-base font-medium pb-2">Password</p>
+          <label className="flex flex-col">
+            <span className="text-sm font-medium mb-1">Password</span>
             <input
               type="password"
-              placeholder="Create a password"
-              className="form-input w-full resize-none rounded-xl text-[#141414] focus:outline-0 focus:ring-0 border border-[#dbdbdb] bg-neutral-50 focus:border-[#dbdbdb] h-14 placeholder:text-neutral-500 p-[15px] text-base font-normal"
+              placeholder="Enter your password"
+              className="w-full h-12 rounded-lg border border-gray-300 bg-neutral-50 px-4 text-sm placeholder:text-gray-400 focus:border-[#FF3956] focus:outline-none"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </label>
-        </div>
-
-        {/* Sign up button */}
-        <div className="flex px-4 py-3">
           <button
-            className="w-full h-10 bg-black text-neutral-50 font-bold text-sm rounded-xl"
+            type="submit"
+            className="w-full h-12 bg-[#FF3956] text-white font-bold text-sm rounded-lg hover:bg-[#C2101E] transition"
           >
-            Register
+            {isPending ? <Spinner sm /> : "Register"}
           </button>
-        </div>
         </form>
-
-        {/* Sign up with Google */}
-        <div className="flex px-4 py-3">
-          <button
-            className="w-full h-10 bg-[#ededed] text-[#141414] font-bold text-sm rounded-xl flex items-center justify-center gap-2"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20px"
-              height="20px"
-              fill="currentColor"
-              viewBox="0 0 256 256"
-            >
-              <path d="M224,128a96,96,0,1,1-21.95-61.09,8,8,0,1,1-12.33,10.18A80,80,0,1,0,207.6,136H128a8,8,0,0,1,0-16h88A8,8,0,0,1,224,128Z" />
-            </svg>
-            <span>Register with Google</span>
-          </button>
-        </div>
-
-        {/* Login link */}
-        <p className="text-neutral-500 text-sm text-center px-4 underline cursor-pointer pt-1">
-          Already have an account? Sign in here
-        </p>
+        <AuthWithGoogle />
+        <FormRedirectLink
+          to="/login"
+          text="Already have an account? Login here"
+        />
       </div>
     </div>
   );

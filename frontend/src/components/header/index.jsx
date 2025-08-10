@@ -3,6 +3,7 @@ import Dropdown from "./Dropdown";
 import { FaShoppingBag } from "react-icons/fa";
 import { FiMoreVertical } from "react-icons/fi";
 import { Link } from "react-router-dom";
+import Logo from "../Logo";
 
 const Header = () => {
   const [openNav, setOpenNav] = useState(false);
@@ -11,14 +12,7 @@ const Header = () => {
   return (
     <header className="flex justify-between items-center px-4 md:px-10 py-4 shadow-md bg-white text-gray-900 relative z-20">
       {/* Logo */}
-      <div>
-        <Link to="/" className="flex flex-col items-center font-logo leading-tight">
-          <h1 className="text-md md:text-lg font-bold tracking-wide text-rose-500">EShopty</h1>
-          <p className="text-[10px] md:text-xs text-gray-600 uppercase tracking-widest font-semibold">
-            Shop Smart. Live Better
-          </p>
-        </Link>
-      </div>
+      <Logo size = "md"/>
 
       {/* Desktop Navigation */}
       <nav className="hidden md:flex items-center space-x-8 text-lg  text-gray-700">

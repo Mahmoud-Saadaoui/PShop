@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FiCheckCircle, FiXCircle, FiX } from "react-icons/fi";
 
 const Alert = ({ message, type }) => {
@@ -7,9 +7,12 @@ const Alert = ({ message, type }) => {
     setIsAlertOpen(false)
   }
 
-  const baseClass =
-    "w-full flex items-start sm:items-center justify-between gap-3 sm:gap-4 rounded-md px-4 py-3 text-sm sm:text-base border shadow-sm";
-  
+  useEffect(() => {
+    if (message) {
+      setIsAlertOpen(true);
+    }
+  }, [message]);
+
   const alertTypeClass = {
     success: {
       bg: "bg-emerald-100/80 border-emerald-300 text-emerald-900",
@@ -24,7 +27,7 @@ const Alert = ({ message, type }) => {
 
   if (!isAlertOpen) return null;
   return (
-    <div className="absolute top-10 left-4 right-4 z-50">
+    <div className="absolute top-28 flex items-center w-[98%] sm:w-[95%] z-50">
       <div
         className={`w-full mx-4 sm:mx-0 rounded-md border shadow-lg p-4 flex items-start gap-4 ${bg}`}
       >
