@@ -4,25 +4,31 @@ import User from '../models/userModel.js';
 
 // User must be authenticated
 const protect = asyncHandler(async (req, res, next) => {
-  let token;
-
-  // Read JWT from the 'jwt' cookie
-  token = req.cookies.jwt;
-
-  if (token) {
-    try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-      req.user = await User.findById(decoded.userId).select('-password');
-
-      next();
-    } catch (error) {
-      console.error(error);
-      res.status(401).json({ message: 'Not authorized, token failed' });
+  try {
+    let token = req.cookies.jwt; 
+    if (!token && req.headers.authorization?.startsWith("Bearer ")) {
+      token = req.headers.authorization.split(" ")[1];
     }
-  } else {
-    res.status(401).json({ message: 'Not authorized, no token' });
-  }
+
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized!" });
+    }
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+      if (err) {
+        return res.status(403).json({ message: "Forbidden!" });
+      }
+      
+      req.user = decoded.userId;
+      next();
+    });
+
+  } catch (err) {
+    res.status(500).json({
+      message: "Internal Server Error",
+      error: err.message,
+    });
+  } 
 });
 
 // User must be an admin

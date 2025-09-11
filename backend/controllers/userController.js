@@ -9,6 +9,25 @@ import { verificationEmailTemplate } from "../utils/templates.js";
 import gravatar from "gravatar"
 
 /**
+ * @desc   GetAuthenticated User
+ * @route  GET /api/users/me
+ * @access Private
+*/
+export const getAuthenticatedUser = asyncHandler(async (req, res) => {
+  const currentUser = await User.findById(req.user).select('-password');
+
+  const token = req.cookies.jwt;
+
+  res.json({
+    token,
+    _id: currentUser._id,
+    name: currentUser.name,
+    email: currentUser.email,
+    isAdmin: currentUser.isAdmin
+  });
+})
+
+/**
  * @desc   Login user
  * @route  POST /api/users/login
  * @access Public
@@ -40,8 +59,7 @@ export const authUser = asyncHandler(async (req, res) => {
       await verificationToken.save();
     }
     // Prepare email content with verification link
-    // const link = `${process.env.CLIENT_DOMAIN}/users/${user._id}/verify/${verificationToken.token}`;
-    const link = `http://localhost:5000/api/users/${verificationToken.userId}/verify/${verificationToken.token}`
+    const link = `${process.env.CLIENT_DEVELOPMENT_DOMAIN}/users/${user._id}/verify/${verificationToken.token}`;
     const htmlTemplate = verificationEmailTemplate(link);
     // Send verification email
     await sendEmail(user.email, "Verify Your Email", htmlTemplate);
@@ -57,6 +75,7 @@ export const authUser = asyncHandler(async (req, res) => {
     _id: user._id,
     name: user.name,
     isAdmin: user.isAdmin,
+    img_url: user.avatar,
   });
 });
 
@@ -98,8 +117,7 @@ export const registerUser = asyncHandler(async (req, res) => {
   })
   await verificationToken.save()
   // Prepare email content with verification link
-  // const link = `${process.env.CLIENT_DOMAIN}/users/${user._id}/verify/${verificationToken.token}`;
-  const link = `http://localhost:5000/api/users/${verificationToken.userId}/verify/${verificationToken.token}`
+  const link = `${process.env.CLIENT_DEVELOPMENT_DOMAIN}/users/${user._id}/verify/${verificationToken.token}`;
   const htmlTemplate = verificationEmailTemplate(link);
   // Send verification email
   await sendEmail(user.email, "Verify Your Email", htmlTemplate);
@@ -127,12 +145,15 @@ export const verifyAccount = asyncHandler(async(req, res) => {
     token: token,
   })
   if (!verificationToken) {
+    if (user.isAccountVerified) {
+      return res.status(200).json({ message: "Your Account is Already Verified!" });
+    }
     return res.status(400).json({ message: "Invalid Link" });
   }
   user.isAccountVerified = true
   await user.save()
 
-  await VerificationToken.deleteOne({ _id: verificationToken._id });
+  await VerificationToken.deleteMany({ userId: user._id });
 
   res.status(200).json({ message: "Your Account is Verified!" })
 })

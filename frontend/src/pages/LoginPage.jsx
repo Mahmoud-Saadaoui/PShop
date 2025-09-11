@@ -1,28 +1,33 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Logo from "../components/Logo";
 import AuthWithGoogle from "../components/form/AuthWithGoogle";
 import FormRedirectLink from "../components/form/FormRedirectLink";
 import { useLogin } from "../lib/queries/auth.queries";
 import Alert from "../components/Alert";
 import Spinner from "../components/loaders/Spinner";
+import { AppContext } from "../context/appContext";
+import { validateLoginForm } from "../validations/loginValidator";
 
 const LoginPage = () => {
+  const { setCredentials } = useContext(AppContext)
+
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [requiredField, setRequiredField] = useState("")
+  const [errorMessage, setErrorMessage] = useState("")
 
-  const {mutate, isPending, isSuccess, error, isError} = useLogin()
+  const {mutate, isPending, error, isError} = useLogin()
 
   const handleFormSubmit = (e) => {
     e.preventDefault()
-    if (email === "" || password === "") {
-      return setRequiredField("All Fields are required")
-    }
+    setErrorMessage("");
+    // ✅ Validation
+    const error = validateLoginForm({ email, password });
+    if (error) return setErrorMessage(error);
+
     mutate({ email, password }, {
-      // onSuccess: (data) => {
-      //   queryClient.setQueryData(['user'], data)
-      //   navigate('/')
-      // },
+      onSuccess: (data) => {
+        setCredentials(data)
+      },
     })
     setEmail("")
     setPassword("")
@@ -34,12 +39,11 @@ const LoginPage = () => {
       {isError ? (
         <Alert
           type="error"
-          message={error.response.data.message || "Failed Login"}
+          message={error.response?.data.message || "Failed Login"}
         />
-      ) : requiredField && (<Alert
-        type="error"
-        message={requiredField}
-      />)}
+      ) : (
+        errorMessage && <Alert type="error" message={errorMessage} />
+      )}
       <div className="flex flex-col w-full max-w-md py-5">
         <Logo size="xl" />
         <form className="space-y-4 px-4" onSubmit={handleFormSubmit}>
@@ -67,7 +71,7 @@ const LoginPage = () => {
             type="submit"
             className="w-full h-12 bg-[#FF3956] text-white font-bold text-sm rounded-lg hover:bg-[#C2101E] transition"
           >
-            {isPending ?  <Spinner sm/> : "Login"}
+            {isPending ? <Spinner sm /> : "Login"}
           </button>
         </form>
 

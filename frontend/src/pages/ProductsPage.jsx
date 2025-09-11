@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { IoFilter, IoClose, IoAlertCircleOutline  } from "react-icons/io5";
+import { IoFilter, IoClose } from "react-icons/io5";
 import FormFilters from "../components/products/FormFilters";
 import { useFetchProducts, useGetPricesRange } from "../lib/queries/productsQueries";
 import Alert from "../components/Alert";

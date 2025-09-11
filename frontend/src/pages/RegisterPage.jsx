@@ -1,46 +1,43 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import AuthWithGoogle from "../components/form/AuthWithGoogle";
 import FormRedirectLink from "../components/form/FormRedirectLink";
 import Logo from "../components/Logo";
 import { useRegister } from "../lib/queries/auth.queries";
 import Alert from "../components/Alert";
 import Spinner from "../components/loaders/Spinner";
-import { useState } from "react";
+import swal from "sweetalert";
+import { validateRegisterForm } from "../validations/registerValidator";
 
 const RegisterPage = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const nameRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[.-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$/;
-
-  const { mutate, isPending, error, isError } = useRegister();
+  const { mutate, isPending, error, isError, isSuccess } = useRegister();
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
     setErrorMessage("");
-
-    if (email === "" || password === "" || name === "") {
-      return setErrorMessage("All fields are required");
-    }
-    if (!nameRegex.test(name)) {
-      return setErrorMessage("Please enter a valid name");
-    }
-    if (!emailRegex.test(email)) {
-      return setErrorMessage("Please enter a valid email");
-    }
-    if (password.length < 6) {
-      return setErrorMessage("Password can't be less than 6 characters");
-    }
+    // ✅ Validation
+    const error = validateRegisterForm({ name, email, password });
+    if (error) return setErrorMessage(error);
     mutate(
       { email, password, name },
       {
-        // onSuccess: (data) => {
-        //   queryClient.setQueryData(['user'], data)
-        //   navigate('/')
-        // },
+        onSuccess: () => {
+          swal({
+            title:
+              "We've sent a verification link to your email address. Please Check it",
+            icon: "success",
+          }).then((isOk) => {
+            if (isOk) {
+              navigate("/login");
+            }
+          });
+        },
       }
     );
     setName("");
@@ -56,7 +53,7 @@ const RegisterPage = () => {
           message={error.response?.data.message || "Failed Register"}
         />
       ) : (
-        errorMessage && <Alert type="error" message={errorMessage} /> 
+        errorMessage && <Alert type="error" message={errorMessage} />
       )}
       <div className="flex flex-col w-full max-w-md py-5">
         <Logo size="xl" />

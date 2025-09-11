@@ -8,6 +8,7 @@ export const fetchBanners = async() => {
     return res.data
   } catch (error) {
     console.error(error)
+    throw error
   }
 }
 
@@ -18,6 +19,7 @@ export const getMostRatedProducts = async() => {
     return res.data
   } catch (error) {
     console.error(error)
+    throw error
   }
 }
 
@@ -28,5 +30,6 @@ export const getProductsByFeaturesBrands = async() => {
     return res.data
   } catch (error) {
     console.error(error)
+    throw error
   }
 }

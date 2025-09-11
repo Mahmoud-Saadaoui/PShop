@@ -2,6 +2,7 @@ import express from "express";
 import {
   authUser,
   deleteUser,
+  getAuthenticatedUser,
   getUserById,
   getUserProfile,
   getUsers,
@@ -19,6 +20,7 @@ router.route("/").get(protect, admin, getUsers);
 router.post('/register', registerUser)
 router.post("/logout", logoutUser);
 router.post("/login", authUser);
+router.get("/me", protect, getAuthenticatedUser);
 router
   .route("/profile")
   .get(protect, getUserProfile)
