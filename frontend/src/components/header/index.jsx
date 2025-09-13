@@ -1,18 +1,41 @@
 import { useContext, useState } from "react";
 import Dropdown from "./Dropdown";
 import { FaShoppingBag } from "react-icons/fa";
-import { FiMoreVertical } from "react-icons/fi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Logo from "../Logo";
 import { AppContext } from "../../context/appContext";
+import { logoutApi } from "../../lib/api/authApi";
+import { useMutation } from "@tanstack/react-query";
+import Spinner from "../loaders/Spinner";
+import Alert from "../Alert";
 
 const Header = () => {
-  const { auth } = useContext(AppContext)
+  const navigate = useNavigate()
+  const { auth, logout } = useContext(AppContext)
   const [openNav, setOpenNav] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
+  const { mutate, isPending, isError, error } = useMutation({
+    mutationFn: logoutApi,
+    onSuccess: () => {
+      logout();
+      navigate('/')
+    },
+  });
+  const handleLogout = () => {
+    mutate();
+  };
+  if (isPending) {
+    return <Spinner/>
+  }
   return (
     <header className="flex justify-between items-center px-4 md:px-10 py-4 shadow-md bg-white text-gray-900 relative z-20">
+      {
+        isError && <Alert
+        message={error.response.data.message || "Failed Logout"}
+        type="error"
+      />
+      }
       {/* Logo */}
       <Logo size="md" />
 
@@ -56,22 +79,15 @@ const Header = () => {
             }`}
           />
         </div>
-        {/* <div className="flex items-center">
-          <img
-            src="https://i.pravatar.cc/32"
-            alt="avatar"
-            className="w-8 h-8 rounded-full object-cover border"
-            onClick={() => setDropdownOpen(!dropdownOpen)}
-          />
-        </div> */}
         {auth ? (
           <div className="flex items-center">
             <img
               src={auth.img_url}
               alt="avatar"
-              className="w-8 h-8 rounded-full object-cover border"
+              className="w-8 h-8 rounded-full object-cover border cursor-pointer"
               onClick={() => setDropdownOpen(!dropdownOpen)}
             />
+            {/* <span onClick={handleLogout}> Logout </span> */}
           </div>
         ) : (
           <Link to="/login" className="">
@@ -80,7 +96,12 @@ const Header = () => {
         )}
 
         {dropdownOpen && (
-          <Dropdown auth={auth} setDropdownOpen={setDropdownOpen} />
+          <Dropdown
+            auth={auth}
+            setDropdownOpen={setDropdownOpen}
+            logout={handleLogout}
+            isError={isError}
+          />
         )}
       </div>
 

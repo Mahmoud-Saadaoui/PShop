@@ -42,3 +42,14 @@ export const verifyEmailApi = async ({ userId, token }) => {
   const res = await axios.get(summaryApi.auth.verify(userId, token))
   return res.data
 }
+
+// Logout User
+export const logoutApi = async () => {
+  try {
+    const res = await axios.post(summaryApi.auth.logout)
+    return res.data
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}

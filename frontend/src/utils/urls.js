@@ -13,7 +13,8 @@ const summaryApi = {
     login: `${api_url}/api/users/login`,
     register: `${api_url}/api/users/register`,
     auth: `${api_url}/api/users/me`,
-    verify: (userId, token) => `${api_url}/api/users/${userId}/verify/${token}`
+    verify: (userId, token) => `${api_url}/api/users/${userId}/verify/${token}`,
+    logout: `${api_url}/api/users/logout`
   },
   products: {
     fetchProducts: `${api_url}/api/products`,
