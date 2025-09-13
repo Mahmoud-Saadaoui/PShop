@@ -22,7 +22,7 @@ const Header = () => {
       navigate('/')
     },
   });
-  const handleLogout = () => {
+  const logoutUser = () => {
     mutate();
   };
   if (isPending) {
@@ -99,7 +99,7 @@ const Header = () => {
           <Dropdown
             auth={auth}
             setDropdownOpen={setDropdownOpen}
-            logout={handleLogout}
+            logout={logoutUser}
             isError={isError}
           />
         )}
