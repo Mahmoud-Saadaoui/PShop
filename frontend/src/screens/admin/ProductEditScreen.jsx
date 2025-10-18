@@ -7,7 +7,6 @@ import {
   Col,
   Card,
   Image,
-  InputGroup,
 } from "react-bootstrap";
 import { toast } from "react-toastify";
 import Message from "../../components/Message";
