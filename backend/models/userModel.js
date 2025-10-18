@@ -12,20 +12,16 @@ const userSchema = mongoose.Schema(
       required: true,
       unique: true,
     },
+    avatar: {
+      type: String,
+    },
     password: {
       type: String,
       required: true,
     },
-    avatar: {
-      type: String,
-    },
     isAdmin: {
       type: Boolean,
       required: true,
-      default: false,
-    },
-    isAccountVerified: {
-      type:Boolean,
       default: false,
     },
   },
@@ -34,9 +30,10 @@ const userSchema = mongoose.Schema(
   }
 );
 
+// Match user entered password to hashed password in database
 userSchema.methods.matchPassword = async function (enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password)
-}
+  return await bcrypt.compare(enteredPassword, this.password);
+};
 
 // Encrypt password using bcrypt
 userSchema.pre('save', async function (next) {
@@ -45,8 +42,7 @@ userSchema.pre('save', async function (next) {
   }
 
   const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(this.password, salt);
-  this.password = hashedPassword;
+  this.password = await bcrypt.hash(this.password, salt);
 });
 
 const User = mongoose.model('User', userSchema);

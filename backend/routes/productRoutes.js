@@ -1,52 +1,27 @@
-import express from "express";
-import {
-  createProduct,
-  createProductReview,
-  deleteProduct,
-  getBrands,
-  getCategories,
-  getFeaturedBrands,
-  getPriceRange,
-  getProductById,
-  getProducts,
-  getTopRatedProducts,
-  updateProductData,
-  updateProductImages,
-} from "../controllers/productController.js";
-import { admin, protect } from "../middlewares/authMiddleware.js";
-import { upload } from "../middlewares/upload.js";
+import express from 'express';
 const router = express.Router();
+import {
+  getProducts,
+  getProductById,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+  createProductReview,
+  getTopProducts,
+  updateProductImage,
+} from '../controllers/productController.js';
+import { protect, admin } from '../middleware/authMiddleware.js';
+import checkObjectId from '../middleware/checkObjectId.js';
+import { upload } from '../middleware/upload.js';
 
-// /api/products
-router.post("/", protect, admin, upload.array('image', 4), createProduct)
-router.get('/', getProducts )
-
-//  /api/products/categories
-router.route("/categories").get(getCategories)
-
-//  /api/products/brands
-router.route("/brands").get(getBrands)
-
-//  /api/products/prices
-router.route("/prices").get(getPriceRange)
-
-//  /api/products/top-rated
-router.route("/top-rated").get(getTopRatedProducts)
-
-//  /api/products/featured-brands
-router.route("/features-brands").get(getFeaturedBrands)
-
-// /api/products/id
+router.route('/').get(getProducts).post(protect, admin, upload.single("image"), createProduct);
+router.get('/top', getTopProducts);
 router
-  .route("/:id")
-  .get(getProductById)
-  .put(protect, admin, updateProductData)
-  .delete(protect, admin, deleteProduct);
-
-// /api/products/id/images
-router.put('/:id/images', protect, admin, upload.array('image', 4), updateProductImages)
-
-//  /api/products/:id/review
-router.route("/:id/review").post(protect, createProductReview)
+  .route('/:id')
+  .get(checkObjectId, getProductById)
+  .put(protect, admin, checkObjectId, updateProduct)
+  .delete(protect, admin, checkObjectId, deleteProduct);
+router.route('/:id/image').put(protect, admin, checkObjectId, upload.single("image"), updateProductImage);
+router.route('/:id/reviews').post(protect, checkObjectId, createProductReview);
 
 export default router;
