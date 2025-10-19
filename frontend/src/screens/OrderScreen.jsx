@@ -22,7 +22,6 @@ const OrderScreen = () => {
     isLoading,
     error,
   } = useGetOrderDetailsQuery(orderId);
-  console.log(order)
 
   const [payOrder, { isLoading: loadingPay }] = usePayOrderMutation();
 
