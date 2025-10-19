@@ -22,6 +22,7 @@ const OrderScreen = () => {
     isLoading,
     error,
   } = useGetOrderDetailsQuery(orderId);
+  console.log(order)
 
   const [payOrder, { isLoading: loadingPay }] = usePayOrderMutation();
 
@@ -159,7 +160,7 @@ const OrderScreen = () => {
                       <Row>
                         <Col md={1}>
                           <Image
-                            src={item.image}
+                            src={item.image.secureUrl}
                             alt={item.name}
                             fluid
                             rounded
