@@ -1,6 +1,6 @@
 # PShop 🛒 - MERN eCommerce Platform
 ## 📄 Description
-ProShop is a full-featured eCommerce platform built with the MERN stack (MongoDB, Express, React, Node.js) and Redux Toolkit for state management.<br>
+PShop is a full-featured eCommerce platform built with the MERN stack (MongoDB, Express, React, Node.js) and Redux Toolkit for state management.<br>
 It allows users to browse products, manage a shopping cart, leave reviews, and complete a checkout with integrated PayPal/credit card payments. Admins can manage products, orders, and users efficiently.<br>
 💡 Enhancement: Product images are stored in Cloudinary for fast, scalable, and secure storage.<br>
 ## ✨ Features
